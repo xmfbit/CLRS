@@ -1,8 +1,12 @@
 #ifndef CLRS_INSERTION_SORT_HPP
 #define CLRS_INSERTION_SORT_HPP
+
+#include <iterator>   // for std::iterator_traits
+#include <functional> // for std::less
+
 namespace alg {
-    template<typename Iterator, typename Comp>
-    void insertion_sort(const Iterator& first, const Iterator& last, const Comp &comp) {
+    template<typename Iterator, typename Comp = std::less<typename std::iterator_traits<Iterator>::value_type>>
+    void insertion_sort(const Iterator& first, const Iterator& last, const Comp &comp = Comp()) {
         if(first == last)   return;
         for (Iterator it = first + 1; it != last; ++it) {
             auto key = *it;
@@ -27,8 +31,8 @@ namespace alg {
         *it = key;
     }
 
-    template<typename Iterator, typename Comp>
-    void insertion_sort_recursive(const Iterator& first, const Iterator& last, const Comp &comp) {
+    template<typename Iterator, typename Comp = std::less<typename std::iterator_traits<Iterator>::value_type>>
+    void insertion_sort_recursive(const Iterator& first, const Iterator& last, const Comp &comp = Comp()) {
         if (first == last) return;
         insertion_sort_recursive_(first, last - 1, comp);
     }

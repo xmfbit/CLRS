@@ -65,15 +65,15 @@ namespace {
         v = generate_random_vector(1, 10);
         v_sort = v;
         std::sort(v_sort.begin(), v_sort.end());
-        insertion_sort(v.begin(), v.end(), comp_int);
+        select_sort(v.begin(), v.end());
         EXPECT_EQ(v, v_sort);
 
-        // We test the algorithm when using pointer as iterator
+        // We test the algorithm when using pointer as iterator and std::less<T> as comparator
         v = generate_random_vector(100, 100);
         v_sort = v;
         int* arr = &v[0];
         std::sort(v_sort.begin(), v_sort.end());
-        select_sort(arr, arr+100, comp_int);
+        select_sort(arr, arr + 100);
         EXPECT_EQ(v, v_sort);
     }
 

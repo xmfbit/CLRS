@@ -2,6 +2,8 @@
 #define CLRS_MERGE_SORT_HPP
 
 #include <iterator>
+#include <functional>
+
 namespace alg {
     template <typename Iterator, typename Comp>
     static void merge(const Iterator& first, const Iterator& mid, const Iterator& last, const Comp& comp) {
@@ -28,8 +30,8 @@ namespace alg {
         delete [] aux;
     };
 
-    template <typename Iterator, typename Comp>
-    void merge_sort(const Iterator& first, const Iterator& last, const Comp& comp) {
+    template <typename Iterator, typename Comp = std::less<typename std::iterator_traits<Iterator>::value_type>>
+    void merge_sort(const Iterator& first, const Iterator& last, const Comp& comp = Comp()) {
         if(first == last || first == last - 1)   return;
         Iterator mid = (last - first) / 2 + first;
         merge_sort(first, mid, comp);
