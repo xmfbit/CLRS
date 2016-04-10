@@ -104,4 +104,14 @@ namespace {
         merge_sort(v.begin(), v.end(), comp_int);
         EXPECT_EQ(v, v_sort);
     }
+
+    TEST(InversionTest, NaiveMethodTest) {
+        std::vector<int> v = {1,2,3,4,5};
+        EXPECT_EQ(get_inversion_count_naive(v.begin(), v.end()), 0);
+        EXPECT_EQ(0, get_inversion_count(v.begin(), v.end()));
+
+        std::vector<int> v2 = {2,1,3,4,0};
+        EXPECT_EQ(get_inversion_count_naive(v2.begin(), v2.end()), 5);
+        EXPECT_EQ(5, get_inversion_count(v2.begin(), v2.end()));
+    }
 }

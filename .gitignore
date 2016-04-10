@@ -4,6 +4,6 @@
 *.gz
 *.aux
 *.tex
-
+*.*~
 images/
 Tools/
