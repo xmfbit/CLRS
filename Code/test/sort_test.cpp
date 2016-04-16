@@ -7,6 +7,7 @@
 #include "sort/select_sort.hpp"
 #include "sort/bubble_sort.hpp"
 #include "sort/merge_sort.hpp"
+#include "sort/heap_sort.hpp"
 
 namespace {
     using namespace alg;
@@ -113,5 +114,13 @@ namespace {
         std::vector<int> v2 = {2,1,3,4,0};
         EXPECT_EQ(get_inversion_count_naive(v2.begin(), v2.end()), 5);
         EXPECT_EQ(5, get_inversion_count(v2.begin(), v2.end()));
+    }
+
+    TEST(SortTest, HeapSortTest) {
+        std::vector<int> v = generate_random_vector(1000, 100);
+        auto v_sort = v;
+        std::sort(v_sort.begin(), v_sort.end());
+        heap_sort(&v[0], v.size());
+        EXPECT_EQ(v, v_sort);
     }
 }

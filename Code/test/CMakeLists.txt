@@ -7,8 +7,22 @@ find_package(GTest REQUIRED)
 include_directories(../src/)
 include_directories(${GTEST_INCLUDE_DIRS})
 
+# add sort as test (see Chapter 2, 6, 7)
 add_executable(sort-test sort_test.cpp)
 target_link_libraries(sort-test ${GTEST_BOTH_LIBRARIES})
 target_link_libraries(sort-test sort-lib)
 
+# add data_structure as test
+# 1. priority_deque (see Chapter 6)
+add_executable(priority_deque-test priority_deque_test.cpp)
+target_link_libraries(priority_deque-test ${GTEST_BOTH_LIBRARIES})
+target_link_libraries(priority_deque-test data_structure-lib)
+# 2. d_heap (see Chapter 6)
+add_executable(d_heap-test d_heap_test.cpp)
+target_link_libraries(d_heap-test ${GTEST_BOTH_LIBRARIES})
+target_link_libraries(d_heap-test data_structure-lib)
+
+# add them to AllTests
 add_test(AllTests sort-test)
+add_test(AllTests priority_deque-test)
+add_test(AllTests d_heap-test)
