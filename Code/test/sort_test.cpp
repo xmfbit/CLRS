@@ -8,6 +8,7 @@
 #include "sort/bubble_sort.hpp"
 #include "sort/merge_sort.hpp"
 #include "sort/heap_sort.hpp"
+#include "sort/quick_sort.hpp"
 
 namespace {
     using namespace alg;
@@ -123,4 +124,13 @@ namespace {
         heap_sort(&v[0], v.size());
         EXPECT_EQ(v, v_sort);
     }
+
+    TEST(SortTest, QuickSortTest) {
+        std::vector<int> v = generate_random_vector(1000, 100);
+        auto v_sort = v;
+        std::sort(v_sort.begin(), v_sort.end());
+        quick_sort(v.begin(), v.end());
+        EXPECT_EQ(v, v_sort);
+    }
+
 }
