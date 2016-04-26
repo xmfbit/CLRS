@@ -23,9 +23,11 @@ namespace alg {
             T val_;
             node* left_;
             node* right_;
+            node* parent_;
             size_t idx_;
-            node(const T& val):val_(val), left_(nullptr), right_(nullptr), idx_(0) {}
-            node(const T& val, size_t idx):val_(val), left_(nullptr), right_(nullptr), idx_(idx) {}
+            node(const T& val):val_(val), left_(nullptr), right_(nullptr), parent_(nullptr), idx_(0) {}
+            node(const T& val, size_t idx):val_(val), left_(nullptr), right_(nullptr), parent_(nullptr), idx_(idx) {}
+            node(const T& val, node* parent, size_t idx):val_(val), left_(nullptr), right_(nullptr), parent_(parent), idx_(idx) {}
         };
 
         size_type sz_;
@@ -89,23 +91,64 @@ namespace alg {
             }
         };
     private:
-        Iterator search(const T& val, node* n) const {
-            if(n == nullptr) return Iterator();
-            if(comp_(n->val_, val) == 0)   return Iterator(n);
+        node* search(const T& val, node* n) const {
+            if(n == nullptr) return nullptr;
+            if(comp_(n->val_, val) == 0)   return n;
             else if(comp_(n->val_, val) < 0)  return search(val, n->right_);
             else return search(val, n->left_);
         }
 
-        node* insert(const T& val, node* x) {
-            if(x == nullptr) x = new node(val, sz_++);
+        node* insert(const T& val, node* x, node* parent) {
+            if(x == nullptr) x = new node(val, parent, sz_++);
             else if(comp_(x->val_, val) < 0) {
-                x->right_ = insert(val, x->right_);
+                x->right_ = insert(val, x->right_, x);
             } else if(comp_(x->val_ , val) > 0) {
-                x->left_ = insert(val, x->left_);
+                x->left_ = insert(val, x->left_, x);
             }
             return x;
         }
-
+        // get the node pointer of the minimum value
+        node* get_minimum(node* n) {
+            node* p = n;
+            while(p->left_ != nullptr) {
+                p = p->left_;
+            }
+            return p;
+        }
+        // get the node pointer of the minimum value
+        node* get_maximum(node* n) {
+            node* p = n;
+            while(p->right_ != nullptr) {
+                p = p->right_;
+            }
+            return p;
+        }
+        // get the successor of a node in the tree
+        node* get_successor(node* n) {
+            if(n->right_ != nullptr) {
+                // find the minimum value in the right sub-tree
+                return get_minimum(n->right_);
+            }
+            auto y = n->parent_;
+            while(y != nullptr && y->left_!=n) {
+                n = y;
+                y = n->parent_;
+            }
+            return y;
+        }
+        // get the predecessor of a node in the tree
+        node* get_predcessor(node* n) {
+            if(n->left_ != nullptr) {
+                // find the maximum value in the left sub-tree
+                return get_maximum(n->left_);
+            }
+            auto y = n->parent_;
+            while (y != nullptr && y->right_ != n) {
+                n = y;
+                y = n->parent_;
+            }
+            return y;
+        }
     public:
         enum OrderType {PreOrder, PostOrder, InOrder};
         BinarySearchTree():sz_(0), root_(nullptr) {}
@@ -116,13 +159,46 @@ namespace alg {
         }
         // search for a value
         Iterator search(const T& val) const {
-            return search(val, root_);
+            return Iterator(search(val, root_));
         }
         // insert value
         void insert(const T& val) {
-            root_ = insert(val, root_);
+            root_ = insert(val, root_, nullptr);
         }
-
+        // erase value
+        void erase(const T& val) {
+            auto p = search(val, root_);
+            if(p == nullptr)    return; // the value is not found. return
+            node* y = nullptr, *x = nullptr;
+            if(p->left_ == nullptr || p->right_ == nullptr) {
+                // if p has no more than one child, we erase the node p
+                y = p;
+            } else {
+                // if p has two children, we erase the successor of node p, which is y
+                y = get_successor(p);
+            }
+            // find the non-null child node of y
+            if(y->left_ != nullptr)    x = y->left_;
+            else x = y->right_;
+            // change the parent link of node x
+            if(x != nullptr)    x->parent_ = y->parent_;
+            if(y->parent_ == nullptr) {
+                // y is the root node of BST
+                root_ = x;
+            } else if(y == y->parent_->left_){
+                // y is the left child node of its parent node
+                y->parent_->left_ = x;
+            } else {
+                // y is the right child node of its parent node
+                y->parent_->right_ = x;
+            }
+            if(y != p) {
+                // copy the content of y into p
+                p->val_ = std::move(y->val_);
+            }
+            delete y;
+            --sz_;
+        }
         // get the iterator of the minimum value
         Iterator get_minimum() {
             if(empty()) return Iterator();
@@ -141,6 +217,17 @@ namespace alg {
             }
             return Iterator(p);
         }
+
+        Iterator get_successor(const Iterator& it) {
+            auto p = it.ptr_;
+            return Iterator(get_successor(p));
+        }
+
+        Iterator get_predcessor(const Iterator& it) {
+            auto p = it.ptr_;
+            return Iterator(get_predcessor(p));
+        }
+
         // return the number of nodes in the tree
         inline size_type size() const {
             return sz_;
