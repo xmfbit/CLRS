@@ -21,7 +21,10 @@ target_link_libraries(priority_deque-test data_structure-lib)
 add_executable(d_heap-test d_heap_test.cpp)
 target_link_libraries(d_heap-test ${GTEST_BOTH_LIBRARIES})
 target_link_libraries(d_heap-test data_structure-lib)
-
+# 3. binary_search_tree (see Chapter 12)
+add_executable(binary_search_tree-test binary_search_tree_test.cpp)
+target_link_libraries(binary_search_tree-test ${GTEST_BOTH_LIBRARIES})
+target_link_libraries(binary_search_tree-test data_structure-lib)
 # add them to AllTests
 add_test(AllTests sort-test)
 add_test(AllTests priority_deque-test)
