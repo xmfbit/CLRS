@@ -9,7 +9,7 @@
 #include "sort/merge_sort.hpp"
 #include "sort/heap_sort.hpp"
 #include "sort/quick_sort.hpp"
-
+#include "sort/counting_sort.hpp"
 namespace {
     using namespace alg;
 
@@ -23,7 +23,7 @@ namespace {
         std::vector<int> res;
         res.reserve(size);
         std::srand(time(nullptr));
-        for(int i = 0; i < size; ++i) {
+        for (int i = 0; i < size; ++i) {
             res.push_back(std::rand() % maxVal);
         }
         return res;
@@ -73,7 +73,7 @@ namespace {
         // We test the algorithm when using pointer as iterator and std::less<T> as comparator
         v = generate_random_vector(100, 100);
         v_sort = v;
-        int* arr = &v[0];
+        int *arr = &v[0];
         std::sort(v_sort.begin(), v_sort.end());
         select_sort(arr, arr + 100);
         EXPECT_EQ(v, v_sort);
@@ -108,11 +108,11 @@ namespace {
     }
 
     TEST(InversionTest, NaiveMethodTest) {
-        std::vector<int> v = {1,2,3,4,5};
+        std::vector<int> v = {1, 2, 3, 4, 5};
         EXPECT_EQ(get_inversion_count_naive(v.begin(), v.end()), 0);
         EXPECT_EQ(0, get_inversion_count(v.begin(), v.end()));
 
-        std::vector<int> v2 = {2,1,3,4,0};
+        std::vector<int> v2 = {2, 1, 3, 4, 0};
         EXPECT_EQ(get_inversion_count_naive(v2.begin(), v2.end()), 5);
         EXPECT_EQ(5, get_inversion_count(v2.begin(), v2.end()));
     }
@@ -133,4 +133,11 @@ namespace {
         EXPECT_EQ(v, v_sort);
     }
 
+    TEST(SortTest, CountingSortTest) {
+        std::vector<int> v = generate_random_vector(1000, 100);
+        auto v_sort = v;
+        std::sort(v_sort.begin(), v_sort.end());
+        counting_sort(v.begin(), v.end(), v_sort[v_sort.size() - 1]);
+        EXPECT_EQ(v_sort, v);
+    }
 }
